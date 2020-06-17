@@ -42,6 +42,33 @@ To use:
 
 This will create the Windows binary `dist/ebookmaker.exe`.
 
+## Releasing binaries
+
+To release a new binary:
+
+1. Ensure you are working with a fresh checkout of the `master` branch.
+2. Tag the repo with the same version of EBookMaker installed in the `Pipfile`:
+   ```
+   git tag v0.9.1 master
+   ```
+3. Push the tag to the upstream repo:
+   ```
+   git push --tags upstream
+   ```
+4. Create the `ebookmaker.exe` file.
+5. Create a zip of the `ebookmaker.exe` file named with the version of
+   EBookMaker that it was built from. For example: `ebookmaker-0.9.1.zip`.
+6. Create an [ebm_builder release](https://github.com/DistributedProofreaders/ebm_builder/releases)
+   with the tag using the following template:
+   * Release title: <tag name>
+   * Description: _updated with the appropriate versions_
+     ```
+     This is a Windows binary of the <tagname>
+     [ebookmaker](https://github.com/gutenbergtools/ebookmaker) tool built on
+     Windows 10 with pyinstaller and Python 3.8.
+     ```
+   * Attach the zip file
+
 ## Updating the version of ebookmaker
 
 To update the version of ebookmaker this tool builds you will need to
