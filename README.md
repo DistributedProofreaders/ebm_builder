@@ -8,7 +8,7 @@ with setuptools==45 and the lack of an installer hook for `jaraco.text`).
 
 These instructions use bash-isms and thus assume you are running the
 following commands in a git bash shell on Windows (presumably after having
-installed [Git for Windows](https://git-scm.com/download/win).
+installed [Git for Windows](https://git-scm.com/download/win)).
 
 To use:
 
@@ -25,19 +25,45 @@ To use:
          will need all of the things this wants to install. All 4GB of it.
       5. Start the install.
 
-3. Within the repository clone, install the pipenv virtual environment
+3. Install `pipenv`
+   ```
+   pip install --user pipenv
+   ```
+
+4. Within the repository clone, install the pipenv virtual environment
    ```
    pipenv install
    ```
 
-4. Enter into a pipenv shell
+5. Enter into a pipenv shell
    ```
    pipenv shell
    ```
 
-5. Build ebookmaker
+6. Build ebookmaker
    ```
-   pyinstaller -F "$(which ebookmaker)"
+   pyinstaller -F \
+      --hidden-import ebookmaker.parsers.AuxParser \
+      --hidden-import ebookmaker.parsers.CSSParser \
+      --hidden-import ebookmaker.parsers.GutenbergTextParser \
+      --hidden-import ebookmaker.parsers.HTMLParser \
+      --hidden-import ebookmaker.parsers.ImageParser \
+      --hidden-import ebookmaker.parsers.RSTParser \
+      --hidden-import ebookmaker.parsers.WrapperParser \
+      --hidden-import ebookmaker.writers.EpubWriter \
+      --hidden-import ebookmaker.writers.HTMLWriter \
+      --hidden-import ebookmaker.writers.KindleWriter \
+      --hidden-import ebookmaker.writers.PDFWriter \
+      --hidden-import ebookmaker.writers.PicsDirWriter \
+      --hidden-import ebookmaker.writers.RSTWriter \
+      --hidden-import ebookmaker.writers.TxtWriter \
+      --hidden-import ebookmaker.packagers.GzipPackager \
+      --hidden-import ebookmaker.packagers.HTMLPackager \
+      --hidden-import ebookmaker.packagers.PDFPackager \
+      --hidden-import ebookmaker.packagers.PushPackager \
+      --hidden-import ebookmaker.packagers.RSTPackager \
+      --hidden-import ebookmaker.packagers.TxtPackager \
+      "$(which ebookmaker)"
    ```
 
 This will create the Windows binary `dist/ebookmaker.exe`.
