@@ -171,6 +171,6 @@ diff -r -u ../../../../ebm_builder-GUvbroJI/Lib/site-packages/ebookmaker/writers
 +    "TxtWriter",
 +]
 +
- class BaseWriter (object):
+ class BaseWriter(object):
      """
      Base class for EpubWriter, PluckerWriter, ...

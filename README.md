@@ -129,12 +129,17 @@ To release a new binary:
 
 ## Updating the version of ebookmaker
 
-To update the version of ebookmaker this tool builds you will need to
-`pipenv install` the newer ebookmaker package version. You may (or may not)
-need to also adjust the version of pyinstaller or any of the other magical
-package dependencies specified inside the Pipfile.
+To update the version of ebookmaker this tool builds, install a new
+version of the ebookmaker package with `pipenv install`:
 
-For example:
 ```
 pipenv install "ebookmaker==0.9.2"
 ```
+
+Then re-apply the patch to enable building with pyinstaller and build
+the new binary as instructed above. Depending on the changes within
+ebookmaker this may require updating the patch and/or the list of hidden
+imports passed into pyinstaller.
+
+Be sure and check in the updated `Pipfile` and `Pipfile.lock` along with
+any other changes before tagging and releasing a new binary.
