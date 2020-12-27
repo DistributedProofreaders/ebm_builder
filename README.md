@@ -33,16 +33,29 @@ installed [Git for Windows](https://git-scm.com/download/win)).
    pipenv install
    ```
 
-5. Enter into a pipenv shell
-   ```
-   pipenv shell
-   ```
-
 ## Build ebookmaker
+
+ebookmaker dynamically loads the set of available parsers, packagers,
+and writers from the filesystem using `pkg_resources`. Unfortunately
+this does not work with pyinstaller so we need to adjust the installed
+ebookmaker code to provide it with an explicit list using the
+`ebookmaker-pyinstaller.patch` file.
+
+```bash
+# Start a pipenv shell
+pipenv shell
+
+# Apply the patch
+./apply_patch.sh
+```
 
 Create the ebookmaker binary with pyinstaller:
 
-```
+```bash
+# Start a pipenv shell if you are not already
+pipenv shell
+
+# Run the installer
 pyinstaller -F \
    --hidden-import ebookmaker.parsers.AuxParser \
    --hidden-import ebookmaker.parsers.CSSParser \
