@@ -8,7 +8,7 @@ These instructions use bash-isms and thus assume you are running the
 following commands in a git bash shell on Windows (presumably after having
 installed [Git for Windows](https://git-scm.com/download/win)).
 
-To use:
+## Set up build environment
 
 1. Clone this repository
 
@@ -38,33 +38,54 @@ To use:
    pipenv shell
    ```
 
-6. Build ebookmaker
-   ```
-   pyinstaller -F \
-      --hidden-import ebookmaker.parsers.AuxParser \
-      --hidden-import ebookmaker.parsers.CSSParser \
-      --hidden-import ebookmaker.parsers.GutenbergTextParser \
-      --hidden-import ebookmaker.parsers.HTMLParser \
-      --hidden-import ebookmaker.parsers.ImageParser \
-      --hidden-import ebookmaker.parsers.RSTParser \
-      --hidden-import ebookmaker.parsers.WrapperParser \
-      --hidden-import ebookmaker.writers.EpubWriter \
-      --hidden-import ebookmaker.writers.HTMLWriter \
-      --hidden-import ebookmaker.writers.KindleWriter \
-      --hidden-import ebookmaker.writers.PDFWriter \
-      --hidden-import ebookmaker.writers.PicsDirWriter \
-      --hidden-import ebookmaker.writers.RSTWriter \
-      --hidden-import ebookmaker.writers.TxtWriter \
-      --hidden-import ebookmaker.packagers.GzipPackager \
-      --hidden-import ebookmaker.packagers.HTMLPackager \
-      --hidden-import ebookmaker.packagers.PDFPackager \
-      --hidden-import ebookmaker.packagers.PushPackager \
-      --hidden-import ebookmaker.packagers.RSTPackager \
-      --hidden-import ebookmaker.packagers.TxtPackager \
-      "$(which ebookmaker)"
-   ```
+## Build ebookmaker
+
+Create the ebookmaker binary with pyinstaller:
+
+```
+pyinstaller -F \
+   --hidden-import ebookmaker.parsers.AuxParser \
+   --hidden-import ebookmaker.parsers.CSSParser \
+   --hidden-import ebookmaker.parsers.GutenbergTextParser \
+   --hidden-import ebookmaker.parsers.HTMLParser \
+   --hidden-import ebookmaker.parsers.ImageParser \
+   --hidden-import ebookmaker.parsers.RSTParser \
+   --hidden-import ebookmaker.parsers.WrapperParser \
+   --hidden-import ebookmaker.writers.EpubWriter \
+   --hidden-import ebookmaker.writers.HTMLWriter \
+   --hidden-import ebookmaker.writers.KindleWriter \
+   --hidden-import ebookmaker.writers.PDFWriter \
+   --hidden-import ebookmaker.writers.PicsDirWriter \
+   --hidden-import ebookmaker.writers.RSTWriter \
+   --hidden-import ebookmaker.writers.TxtWriter \
+   --hidden-import ebookmaker.packagers.GzipPackager \
+   --hidden-import ebookmaker.packagers.HTMLPackager \
+   --hidden-import ebookmaker.packagers.PDFPackager \
+   --hidden-import ebookmaker.packagers.PushPackager \
+   --hidden-import ebookmaker.packagers.RSTPackager \
+   --hidden-import ebookmaker.packagers.TxtPackager \
+   "$(which ebookmaker)"
+```
 
 This will create the Windows binary `dist/ebookmaker.exe`.
+
+## Validate binary
+
+To validate the `ebookmaker.exe` binary is working correctly, you must
+build an epub, not just `ebookmaker.exe --version`:
+
+```bash
+./dist/ebookmaker.exe \
+    --verbose \
+    --make=epub.images \
+    --output-dir build \
+    --title sample_ebook \
+    sample_ebook/ebmtest.htm
+```
+
+This should create `build/sample_ebook-images-epub.epub`. You may get an
+error if `tidy` isn't installed on your system -- this is fine and can
+be ignored.
 
 ## Releasing binaries
 
