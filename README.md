@@ -2,9 +2,7 @@
 
 This is a hacky little repo used to build Windows binaries for
 [ebookmaker](https://github.com/gutenbergtools/ebookmaker) using
-[pyinstaller](https://github.com/pyinstaller/pyinstaller). It uses an
-in-development version of pyinstaller to work around issues in v3.6 (problems
-with setuptools==45 and the lack of an installer hook for `jaraco.text`).
+[pyinstaller](https://github.com/pyinstaller/pyinstaller).
 
 These instructions use bash-isms and thus assume you are running the
 following commands in a git bash shell on Windows (presumably after having
