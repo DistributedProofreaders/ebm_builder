@@ -23,12 +23,18 @@ installed [Git for Windows](https://git-scm.com/download/win)).
          will need all of the things this wants to install. All 4GB of it.
       5. Start the install.
 
-3. Install `pipenv`
+3. If not present already, you may need to add the following to your
+   PATH to pick up python, pip, and pipenv:
+   * `%USERPROFILE%\AppData\Local\Programs\Python\Python38`
+   * `%USERPROFILE%\AppData\Local\Programs\Python\Python38\Scripts`
+   * `%USERPROFILE%\AppData\Roaming\Python\Python38\Scripts`
+
+4. Install `pipenv`
    ```
    pip install --user pipenv
    ```
 
-4. Within the repository clone, install the pipenv virtual environment
+5. Within the repository clone, install the pipenv virtual environment
    ```
    pipenv install
    ```
