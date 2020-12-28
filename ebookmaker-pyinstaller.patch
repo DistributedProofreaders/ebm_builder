@@ -1,0 +1,176 @@
+--- ../../../../ebm_builder-GUvbroJI/Lib/site-packages/ebookmaker/packagers/__init__.py	2020-12-27 15:09:18.381644200 -0800
++++ ./packagers/__init__.py	2020-06-17 17:06:40.168812700 -0700
+@@ -18,11 +18,20 @@
+ import gzip
+ import zipfile
+ 
+-from pkg_resources import resource_listdir  # pylint: disable=E0611
++from importlib import import_module
+ 
+ from libgutenberg.Logger import debug, info, warning, error
+ import libgutenberg.GutenbergGlobals as gg
+ 
++packagerlist = [
++    "GzipPackager",
++    "HTMLPackager",
++    "PDFPackager",
++    "PushPackager",
++    "RSTPackager",
++    "TxtPackager",
++]
++
+ GZIP_EXTENSION = '.gzip'
+ 
+ class BasePackager (object):
+@@ -157,16 +166,12 @@
+     def load_packagers (cls):
+         """ Load the packagers in the packagers directory. """
+ 
+-        for fn in resource_listdir ('ebookmaker.packagers', ''):
+-            modulename, ext = os.path.splitext (fn)
+-            if ext == '.py':
+-                if modulename.endswith ('Packager'):
+-                    module = __import__ ('ebookmaker.packagers.' + modulename,
+-                                         fromlist = [modulename])
+-                    debug ("Loading packager type: %s from module: %s for formats: %s" % (
+-                        module.TYPE, modulename, ', '.join (module.FORMATS)))
+-                    for format_ in module.FORMATS:
+-                        cls.packagers[cls.mk_key (module.TYPE, format_)] = module
++        for modulename in packagerlist:
++            module = import_module("ebookmaker.packagers." + modulename)
++            debug ("Loading packager type: %s from module: %s for formats: %s" % (
++                module.TYPE, modulename, ', '.join (module.FORMATS)))
++            for format_ in module.FORMATS:
++                cls.packagers[cls.mk_key (module.TYPE, format_)] = module
+ 
+         return cls.packagers.keys ()
+ 
+diff -r -u ../../../../ebm_builder-GUvbroJI/Lib/site-packages/ebookmaker/ParserFactory.py ./ParserFactory.py
+--- ../../../../ebm_builder-GUvbroJI/Lib/site-packages/ebookmaker/ParserFactory.py	2020-12-27 15:09:18.357809500 -0800
++++ ./ParserFactory.py	2020-06-17 16:28:56.358764100 -0700
+@@ -18,7 +18,7 @@
+ from six.moves import urllib
+ import six
+ 
+-from pkg_resources import resource_listdir, resource_stream # pylint: disable=E0611
++from pkg_resources import resource_stream # pylint: disable=E0611
+ import requests
+ 
+ from libgutenberg.Logger import debug, error
+@@ -27,21 +27,22 @@
+ from ebookmaker.Version import VERSION
+ from ebookmaker import parsers
+ 
++from importlib import import_module
++from ebookmaker.parsers import parserlist
++
++
+ options = Options()
+ parser_modules = {}
+ 
+ def load_parsers():
+     """ See what types we can parse. """
+ 
+-    for fn in resource_listdir('ebookmaker.parsers', ''):
+-        modulename, ext = os.path.splitext(fn)
+-        if ext == '.py':
+-            if modulename.endswith('Parser'):
+-                module = __import__('ebookmaker.parsers.' + modulename, fromlist=[modulename])
+-                debug("Loading parser from module: %s for mediatypes: %s" % (
+-                    modulename, ', '.join(module.mediatypes)))
+-                for mediatype in module.mediatypes:
+-                    parser_modules[mediatype] = module
++    for modulename in parserlist:
++        module = import_module("ebookmaker.parsers." + modulename)
++        debug("Loading parser from module: %s for mediatypes: %s" % (
++            modulename, ', '.join(module.mediatypes)))
++        for mediatype in module.mediatypes:
++            parser_modules[mediatype] = module
+ 
+     return parser_modules.keys()
+ 
+diff -r -u ../../../../ebm_builder-GUvbroJI/Lib/site-packages/ebookmaker/parsers/__init__.py ./parsers/__init__.py
+--- ../../../../ebm_builder-GUvbroJI/Lib/site-packages/ebookmaker/parsers/__init__.py	2020-12-27 15:09:18.397267800 -0800
++++ ./parsers/__init__.py	2020-06-17 16:29:19.533619300 -0700
+@@ -31,6 +31,17 @@
+ 
+ from ebookmaker.CommonCode import Options
+ 
++# explicitly define the set of available parsers in this directory
++parserlist = [
++    "AuxParser",
++    "CSSParser",
++    "GutenbergTextParser",
++    "HTMLParser",
++    "ImageParser",
++    "RSTParser",
++    "WrapperParser",
++]
++
+ options = Options()
+ 
+ BROKEN = 'resource://ebookmaker.parsers/broken.png'
+diff -r -u ../../../../ebm_builder-GUvbroJI/Lib/site-packages/ebookmaker/WriterFactory.py ./WriterFactory.py
+--- ../../../../ebm_builder-GUvbroJI/Lib/site-packages/ebookmaker/WriterFactory.py	2020-12-27 15:09:18.362809400 -0800
++++ ./WriterFactory.py	2020-06-17 16:57:30.094866100 -0700
+@@ -16,7 +16,8 @@
+ 
+ import os.path
+ 
+-from pkg_resources import resource_listdir # pylint: disable=E0611
++from importlib import import_module
++from ebookmaker.writers import writerlist
+ 
+ from libgutenberg.Logger import error, debug
+ from ebookmaker.CommonCode import Options
+@@ -28,19 +29,17 @@
+ def __load_writers_from (package_name):
+     """ See what types we can write. """
+ 
+-    for fn in resource_listdir (package_name, ''):
+-        modulename, ext = os.path.splitext (fn)
+-        if ext == '.py' and modulename.endswith ('Writer'):
+-            type_ = modulename.lower ().replace ('writer', '')
+-            try:
+-                debug ("Loading writer type %s from module %s" % (type_, modulename))
+-                module = __import__ (package_name + '.' + modulename, fromlist = [modulename])
+-                writers[type_] = module
+-            except ImportError as what:
+-                error (
+-                    "Could not load writer type %s from module %s. %s" %
+-                    (type_, modulename, what)
+-                )
++    for modulename in writerlist:
++        type_ = modulename.lower ().replace ('writer', '')
++        try:
++            module = import_module("ebookmaker.writers." + modulename)
++            debug ("Loading writer type %s from module %s" % (type_, modulename))
++            writers[type_] = module
++        except ImportError as what:
++            error (
++                "Could not load writer type %s from module %s. %s" %
++                (type_, modulename, what)
++            )
+ 
+ 
+ def load_writers ():
+diff -r -u ../../../../ebm_builder-GUvbroJI/Lib/site-packages/ebookmaker/writers/__init__.py ./writers/__init__.py
+--- ../../../../ebm_builder-GUvbroJI/Lib/site-packages/ebookmaker/writers/__init__.py	2020-12-27 15:09:18.412937600 -0800
++++ ./writers/__init__.py	2020-06-17 16:53:26.250041000 -0700
+@@ -29,6 +29,16 @@
+ from ebookmaker.Version import VERSION, GENERATOR
+ 
+ 
++writerlist = [
++    "EpubWriter",
++    "HTMLWriter",
++    "KindleWriter",
++    "PDFWriter",
++    "PicsDirWriter",
++    "RSTWriter",
++    "TxtWriter",
++]
++
+ class BaseWriter(object):
+     """
+     Base class for EpubWriter, PluckerWriter, ...

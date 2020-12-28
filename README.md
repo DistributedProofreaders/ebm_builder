@@ -2,15 +2,13 @@
 
 This is a hacky little repo used to build Windows binaries for
 [ebookmaker](https://github.com/gutenbergtools/ebookmaker) using
-[pyinstaller](https://github.com/pyinstaller/pyinstaller). It uses an
-in-development version of pyinstaller to work around issues in v3.6 (problems
-with setuptools==45 and the lack of an installer hook for `jaraco.text`).
+[pyinstaller](https://github.com/pyinstaller/pyinstaller).
 
 These instructions use bash-isms and thus assume you are running the
 following commands in a git bash shell on Windows (presumably after having
 installed [Git for Windows](https://git-scm.com/download/win)).
 
-To use:
+## Set up build environment
 
 1. Clone this repository
 
@@ -25,48 +23,88 @@ To use:
          will need all of the things this wants to install. All 4GB of it.
       5. Start the install.
 
-3. Install `pipenv`
+3. If not present already, you may need to add the following to your
+   PATH to pick up python, pip, and pipenv:
+   * `%USERPROFILE%\AppData\Local\Programs\Python\Python38`
+   * `%USERPROFILE%\AppData\Local\Programs\Python\Python38\Scripts`
+   * `%USERPROFILE%\AppData\Roaming\Python\Python38\Scripts`
+
+4. Install `pipenv`
    ```
    pip install --user pipenv
    ```
 
-4. Within the repository clone, install the pipenv virtual environment
+5. Within the repository clone, install the pipenv virtual environment
    ```
    pipenv install
    ```
 
-5. Enter into a pipenv shell
-   ```
-   pipenv shell
-   ```
+## Build ebookmaker
 
-6. Build ebookmaker
-   ```
-   pyinstaller -F \
-      --hidden-import ebookmaker.parsers.AuxParser \
-      --hidden-import ebookmaker.parsers.CSSParser \
-      --hidden-import ebookmaker.parsers.GutenbergTextParser \
-      --hidden-import ebookmaker.parsers.HTMLParser \
-      --hidden-import ebookmaker.parsers.ImageParser \
-      --hidden-import ebookmaker.parsers.RSTParser \
-      --hidden-import ebookmaker.parsers.WrapperParser \
-      --hidden-import ebookmaker.writers.EpubWriter \
-      --hidden-import ebookmaker.writers.HTMLWriter \
-      --hidden-import ebookmaker.writers.KindleWriter \
-      --hidden-import ebookmaker.writers.PDFWriter \
-      --hidden-import ebookmaker.writers.PicsDirWriter \
-      --hidden-import ebookmaker.writers.RSTWriter \
-      --hidden-import ebookmaker.writers.TxtWriter \
-      --hidden-import ebookmaker.packagers.GzipPackager \
-      --hidden-import ebookmaker.packagers.HTMLPackager \
-      --hidden-import ebookmaker.packagers.PDFPackager \
-      --hidden-import ebookmaker.packagers.PushPackager \
-      --hidden-import ebookmaker.packagers.RSTPackager \
-      --hidden-import ebookmaker.packagers.TxtPackager \
-      "$(which ebookmaker)"
-   ```
+ebookmaker dynamically loads the set of available parsers, packagers,
+and writers from the filesystem using `pkg_resources`. Unfortunately
+this does not work with pyinstaller so we need to adjust the installed
+ebookmaker code to provide it with an explicit list using the
+`ebookmaker-pyinstaller.patch` file.
+
+```bash
+# Start a pipenv shell
+pipenv shell
+
+# Apply the patch
+./apply_patch.sh
+```
+
+Create the ebookmaker binary with pyinstaller:
+
+```bash
+# Start a pipenv shell if you are not already
+pipenv shell
+
+# Run the installer
+pyinstaller -F \
+   --hidden-import ebookmaker.parsers.AuxParser \
+   --hidden-import ebookmaker.parsers.CSSParser \
+   --hidden-import ebookmaker.parsers.GutenbergTextParser \
+   --hidden-import ebookmaker.parsers.HTMLParser \
+   --hidden-import ebookmaker.parsers.ImageParser \
+   --hidden-import ebookmaker.parsers.RSTParser \
+   --hidden-import ebookmaker.parsers.WrapperParser \
+   --hidden-import ebookmaker.writers.EpubWriter \
+   --hidden-import ebookmaker.writers.HTMLWriter \
+   --hidden-import ebookmaker.writers.KindleWriter \
+   --hidden-import ebookmaker.writers.PDFWriter \
+   --hidden-import ebookmaker.writers.PicsDirWriter \
+   --hidden-import ebookmaker.writers.RSTWriter \
+   --hidden-import ebookmaker.writers.TxtWriter \
+   --hidden-import ebookmaker.packagers.GzipPackager \
+   --hidden-import ebookmaker.packagers.HTMLPackager \
+   --hidden-import ebookmaker.packagers.PDFPackager \
+   --hidden-import ebookmaker.packagers.PushPackager \
+   --hidden-import ebookmaker.packagers.RSTPackager \
+   --hidden-import ebookmaker.packagers.TxtPackager \
+   "$(which ebookmaker)"
+```
 
 This will create the Windows binary `dist/ebookmaker.exe`.
+
+## Validate binary
+
+To validate the `ebookmaker.exe` binary is working correctly, you must
+build an epub, not just `ebookmaker.exe --version`:
+
+```bash
+./dist/ebookmaker.exe \
+    --verbose \
+    --make=epub.images \
+    --output-dir build \
+    --title sample_ebook \
+    sample_ebook/ebmtest.htm
+```
+
+This should create `build/sample_ebook-images-epub.epub`. You may get an
+error if `tidy` isn't installed on your system -- this is fine and can
+be ignored.
 
 ## Releasing binaries
 
@@ -97,12 +135,17 @@ To release a new binary:
 
 ## Updating the version of ebookmaker
 
-To update the version of ebookmaker this tool builds you will need to
-`pipenv install` the newer ebookmaker package version. You may (or may not)
-need to also adjust the version of pyinstaller or any of the other magical
-package dependencies specified inside the Pipfile.
+To update the version of ebookmaker this tool builds, install a new
+version of the ebookmaker package with `pipenv install`:
 
-For example:
 ```
 pipenv install "ebookmaker==0.9.2"
 ```
+
+Then re-apply the patch to enable building with pyinstaller and build
+the new binary as instructed above. Depending on the changes within
+ebookmaker this may require updating the patch and/or the list of hidden
+imports passed into pyinstaller.
+
+Be sure and check in the updated `Pipfile` and `Pipfile.lock` along with
+any other changes before tagging and releasing a new binary.
