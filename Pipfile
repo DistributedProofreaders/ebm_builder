@@ -8,7 +8,8 @@ verify_ssl = true
 [packages]
 pywin32-ctypes = "*"
 pyinstaller = "==4.1"
-ebookmaker = "==0.10.5"
+libgutenberg = ">=0.8.11"
+ebookmaker = "==0.11.13"
 
 [requires]
 python_version = "3.8"
