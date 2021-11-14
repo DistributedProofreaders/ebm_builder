@@ -171,9 +171,11 @@ any other changes before tagging and releasing a new binary.
 
 If ebookmaker crashes and the traceback refers to imported packages, it
 may be that one of the packages has been updated, requiring an updated
-version of pyinstaller:
+version of pyinstaller. Try upgrading to the latest version of PyInstaller
+by finding the [latest released version](https://github.com/pyinstaller/pyinstaller/releases)
+and upgrading to it with:
 ```
-pipenv install "pyinstaller==4.7"
+pipenv install "pyinstaller==$LATEST_RELEASE"
 ```
 
 An error such as `local variable 'xxxx' referenced before assignment` may
