@@ -29,12 +29,19 @@ installed [Git for Windows](https://git-scm.com/download/win)).
    * `%USERPROFILE%\AppData\Local\Programs\Python\Python38\Scripts`
    * `%USERPROFILE%\AppData\Roaming\Python\Python38\Scripts`
 
-4. Install `pipenv`
+4. Also ensure that tidy is on your PATH, since it is used by ebookmaker.
+   A version of tidy is bundled with Windows Guiguts, and can be found in
+   the tools (or src/tools) directory:
+   ```
+   PATH=$PATH:/c/dp/guiguts/src/tools/tidy
+   ```
+
+5. Install `pipenv`
    ```
    pip install --user pipenv
    ```
 
-5. Within the repository clone, install the pipenv virtual environment
+6. Within the repository clone, install the pipenv virtual environment
    ```
    pipenv install
    ```
@@ -98,6 +105,7 @@ build an epub, not just `ebookmaker.exe --version`:
     --verbose \
     --make=epub.images \
     --output-dir build \
+    --config-dir dist \
     --title sample_ebook \
     sample_ebook/ebmtest.htm
 ```
@@ -119,10 +127,12 @@ To release a new binary:
    ```
    git push --tags upstream
    ```
-4. Create the `ebookmaker.exe` file.
-5. Create a zip of the `ebookmaker.exe` file named with the version of
-   EBookMaker that it was built from. For example: `ebookmaker-0.9.1.zip`.
-6. Create an [ebm_builder release](https://github.com/DistributedProofreaders/ebm_builder/releases)
+4. Create the `ebookmaker.exe` file in the dist folder.
+5. Copy a suitable tidy.conf into the dist folder - use `get_tidy_conf.sh`.
+6. Create a zip named with the version of EBookMaker that it was built from.
+   For example: `ebookmaker-0.9.1.zip`.
+   It should contain the `ebookmaker.exe` and the `tidy.conf` files.
+7. Create an [ebm_builder release](https://github.com/DistributedProofreaders/ebm_builder/releases)
    with the tag using the following template:
    * Release title: <tag name>
    * Description: _updated with the appropriate versions_
@@ -142,6 +152,13 @@ version of the ebookmaker package with `pipenv install`:
 pipenv install "ebookmaker==0.9.2"
 ```
 
+Get the relevant version of the tidy.conf file into the dist directory.
+You may need to update the version number in the script first:
+
+```
+./get_tidy_conf.sh
+```
+
 Then re-apply the patch to enable building with pyinstaller and build
 the new binary as instructed above. Depending on the changes within
 ebookmaker this may require updating the patch and/or the list of hidden
@@ -149,3 +166,20 @@ imports passed into pyinstaller.
 
 Be sure and check in the updated `Pipfile` and `Pipfile.lock` along with
 any other changes before tagging and releasing a new binary.
+
+## Troubleshooting
+
+If ebookmaker crashes and the traceback refers to imported packages, it
+may be that one of the packages has been updated, requiring an updated
+version of pyinstaller:
+```
+pipenv install "pyinstaller==4.7"
+```
+
+An error such as `local variable 'xxxx' referenced before assignment` may
+indicate that a fix is needed in ebookmaker itself. Contact the ebookmaker
+maintainers with details.
+
+Error `Entity 'nbsp' not defined` indicates that either that the tidy.conf
+file has not been located, or is incorrect. The tidy.conf file sets an option
+that converts named entities to numeric ones.
