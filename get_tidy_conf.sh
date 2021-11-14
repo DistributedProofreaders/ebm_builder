@@ -5,10 +5,6 @@
 
 set -e
 
-VERSION=0.11.26
+VERSION=$(grep ebookmaker Pipfile | tr -d '"' | sed 's/.*==//')
 
-rm -rf ebookmaker.zip ebmtemp
-curl -L -o ebookmaker.zip https://github.com/gutenbergtools/ebookmaker/archive/refs/tags/$VERSION.zip
-unzip -q ebookmaker.zip -d ebmtemp
-cp ebmtemp/ebookmaker-$VERSION/ebookmaker/parsers/tidy.conf dist
-rm -rf ebookmaker.zip ebmtemp
+curl -L -o dist/tidy.conf https://github.com/gutenbergtools/ebookmaker/raw/$VERSION/ebookmaker/parsers/tidy.conf
