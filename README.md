@@ -153,7 +153,6 @@ pipenv install "ebookmaker==0.9.2"
 ```
 
 Get the relevant version of the tidy.conf file into the dist directory.
-You may need to update the version number in the script first:
 
 ```
 ./get_tidy_conf.sh
