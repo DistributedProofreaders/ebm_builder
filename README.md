@@ -13,35 +13,28 @@ installed [Git for Windows](https://git-scm.com/download/win)).
 1. Clone this repository
 
 2. Install the ebookmaker build dependencies
-   1. Install Python 3.8 from [python.org](https://www.python.org/downloads/windows/).
+   1. Install Python 3.10 from [python.org](https://www.python.org/downloads/windows/).
    2. Install Microsoft Visual Studio Build Tools.
       1. Go to [Microsoft Visual Studio Downloads](https://visualstudio.microsoft.com/downloads/).
-      2. Scroll down and expand *Tools for Visual Studio 2019*.
-      3. Download *Build Tools for Visual Studio 2019*. This will download and
+      2. Scroll down and expand *Visual Studio* under *All Downloads*.
+      3. Download *Build Tools for Visual Studio 2022*. This will download and
          start the Visual Studio Installer.
-      4. In the installer, select the **C++ build tools** workload. You really
-         will need all of the things this wants to install. All 4GB of it.
+      4. In the installer, select the **Desktop Development with C++** workload. You really
+         will need all of the things this wants to install by default. All 6GB of it.
       5. Start the install.
 
 3. If not present already, you may need to add the following to your
    PATH to pick up python, pip, and pipenv:
-   * `%USERPROFILE%\AppData\Local\Programs\Python\Python38`
-   * `%USERPROFILE%\AppData\Local\Programs\Python\Python38\Scripts`
-   * `%USERPROFILE%\AppData\Roaming\Python\Python38\Scripts`
+   * `%USERPROFILE%\AppData\Local\Programs\Python\Python310`
+   * `%USERPROFILE%\AppData\Local\Programs\Python\Python310\Scripts`
+   * `%USERPROFILE%\AppData\Roaming\Python\Python310\Scripts`
 
-4. Also ensure that tidy is on your PATH, since it is used by ebookmaker.
-   A version of tidy is bundled with Windows Guiguts, and can be found in
-   the tools (or src/tools) directory:
-   ```
-   PATH=$PATH:/c/dp/guiguts/src/tools/tidy
-   ```
-
-5. Install `pipenv`
+4. Install `pipenv`
    ```
    pip install --user pipenv
    ```
 
-6. Within the repository clone, install the pipenv virtual environment
+5. Within the repository clone, install the pipenv virtual environment
    ```
    pipenv install
    ```
