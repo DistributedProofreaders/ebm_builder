@@ -71,6 +71,7 @@ pyinstaller -F \
    --hidden-import ebookmaker.parsers.RSTParser \
    --hidden-import ebookmaker.parsers.WrapperParser \
    --hidden-import ebookmaker.writers.EpubWriter \
+   --hidden-import ebookmaker.writers.Epub3Writer \
    --hidden-import ebookmaker.writers.HTMLWriter \
    --hidden-import ebookmaker.writers.KindleWriter \
    --hidden-import ebookmaker.writers.PDFWriter \
