@@ -8,7 +8,7 @@ verify_ssl = true
 [packages]
 pywin32-ctypes = "*"
 pyinstaller = "==4.7"
-ebookmaker = "==0.12.0b0"
+ebookmaker = "==0.12.0"
 
 [requires]
 python_version = ">=3.8"

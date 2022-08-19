@@ -104,9 +104,7 @@ build an epub, not just `ebookmaker.exe --version`:
     sample_ebook/ebmtest.htm
 ```
 
-This should create `build/sample_ebook-images-epub.epub`. You may get an
-error if `tidy` isn't installed on your system -- this is fine and can
-be ignored.
+This should create `build/sample_ebook-images-epub.epub`.
 
 ## Releasing binaries
 
@@ -122,11 +120,10 @@ To release a new binary:
    git push --tags upstream
    ```
 4. Create the `ebookmaker.exe` file in the dist folder.
-5. Copy a suitable tidy.conf into the dist folder - use `get_tidy_conf.sh`.
-6. Create a zip named with the version of EBookMaker that it was built from.
+5. Create a zip named with the version of EBookMaker that it was built from.
    For example: `ebookmaker-0.9.1.zip`.
-   It should contain the `ebookmaker.exe` and the `tidy.conf` files.
-7. Create an [ebm_builder release](https://github.com/DistributedProofreaders/ebm_builder/releases)
+   It should contain the `ebookmaker.exe` file.
+6. Create an [ebm_builder release](https://github.com/DistributedProofreaders/ebm_builder/releases)
    with the tag using the following template:
    * Release title: <tag name>
    * Description: _updated with the appropriate versions_
@@ -144,12 +141,6 @@ version of the ebookmaker package with `pipenv install`:
 
 ```
 pipenv install "ebookmaker==0.9.2"
-```
-
-Get the relevant version of the tidy.conf file into the dist directory.
-
-```
-./get_tidy_conf.sh
 ```
 
 Then re-apply the patch to enable building with pyinstaller and build
@@ -174,7 +165,3 @@ pipenv install "pyinstaller==$LATEST_RELEASE"
 An error such as `local variable 'xxxx' referenced before assignment` may
 indicate that a fix is needed in ebookmaker itself. Contact the ebookmaker
 maintainers with details.
-
-Error `Entity 'nbsp' not defined` indicates that either that the tidy.conf
-file has not been located, or is incorrect. The tidy.conf file sets an option
-that converts named entities to numeric ones.
