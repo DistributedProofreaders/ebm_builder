@@ -56,7 +56,7 @@ diff -r -u ../../../../ebm_builder-GUvbroJI/Lib/site-packages/ebookmaker/ParserF
 +from pkg_resources import resource_stream # pylint: disable=E0611
  import requests
  
- from libgutenberg.Logger import debug, error
+ from libgutenberg.Logger import critical, debug, error, info
 @@ -27,21 +27,22 @@
  from ebookmaker.Version import VERSION
  from ebookmaker import parsers
@@ -157,12 +157,13 @@ diff -r -u ../../../../ebm_builder-GUvbroJI/Lib/site-packages/ebookmaker/WriterF
 diff -r -u ../../../../ebm_builder-GUvbroJI/Lib/site-packages/ebookmaker/writers/__init__.py ./writers/__init__.py
 --- ../../../../ebm_builder-GUvbroJI/Lib/site-packages/ebookmaker/writers/__init__.py	2020-12-27 15:09:18.412937600 -0800
 +++ ./writers/__init__.py	2020-06-17 16:53:26.250041000 -0700
-@@ -29,6 +29,16 @@
+@@ -30,6 +30,16 @@
+ from ebookmaker.CommonCode import Options
  from ebookmaker.Version import VERSION, GENERATOR
- 
  
 +writerlist = [
 +    "EpubWriter",
++    "Epub3Writer",
 +    "HTMLWriter",
 +    "KindleWriter",
 +    "PDFWriter",
@@ -170,7 +171,6 @@ diff -r -u ../../../../ebm_builder-GUvbroJI/Lib/site-packages/ebookmaker/writers
 +    "RSTWriter",
 +    "TxtWriter",
 +]
-+
- class BaseWriter(object):
-     """
-     Base class for EpubWriter, PluckerWriter, ...
+ 
+ options = Options()
+ 
