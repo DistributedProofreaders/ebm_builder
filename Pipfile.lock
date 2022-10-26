@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "2026573138bca0502ddddb6ba1e6d61a1d1c61bbeff370910feed65ccb33dcca"
+            "sha256": "5b16e8c604496655099efe915a29a65c6146ab3dc9e0e0b2ece1d9e307b4ef10"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -197,10 +197,10 @@
         },
         "ebookmaker": {
             "hashes": [
-                "sha256:8b64c598766f690b37f4929bbdbd8817d39579bf94cdbb5bb9e0e194184f3680"
+                "sha256:dde18dbfa92f64aee7036908238f6f01054f8bfc13c1737879145dfc356b4a55"
             ],
             "index": "pypi",
-            "version": "==0.12.19"
+            "version": "==0.12.20"
         },
         "future": {
             "hashes": [
@@ -307,11 +307,11 @@
         },
         "jaraco.collections": {
             "hashes": [
-                "sha256:072b93eb35f9e48508485755534e66a34ef1cc84af291fd27f39b44d4c0dd2c3",
-                "sha256:1ca12fa4b7067dfc8d7f791c1a8660d970a2bf2f80536ba0aa5cbb71fe1261f1"
+                "sha256:2cd9fdc414d0e541bce0d4ccf2caef250f5467727bbf66207c2db15e848287f4",
+                "sha256:9e4ef23d10d0b97ffd37b1f5a65819ea691d4da8ca2190bd19d5a035d7ccd9ca"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==3.5.2"
+            "version": "==3.6.0"
         },
         "jaraco.context": {
             "hashes": [
@@ -342,9 +342,9 @@
                 "covers"
             ],
             "hashes": [
-                "sha256:7953ca120ebbe05eef4befd6db22a0f2d8e10c9be497781e64e8b8d3ec158856"
+                "sha256:33b980123d6a4422be76a6f58a7bdca8d40079322f06af9993f06d5c0f151d9a"
             ],
-            "version": "==0.10.7"
+            "version": "==0.10.8"
         },
         "lxml": {
             "hashes": [
