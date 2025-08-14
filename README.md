@@ -1,5 +1,9 @@
 # ebookmaker builder
 
+> [!WARNING]
+> This repo is **no longer being actively maintained**, since it was merely
+> a support for [Guiguts version 1](https://github.com/DistributedProofreaders/guiguts).
+
 This is a hacky little repo used to build Windows binaries for
 [ebookmaker](https://github.com/gutenbergtools/ebookmaker) using
 [pyinstaller](https://github.com/pyinstaller/pyinstaller).
